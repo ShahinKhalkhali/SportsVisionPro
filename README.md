@@ -12,7 +12,7 @@ Additionally, player safety is a top priority. The product will provide immersiv
 
 In summary, the current system does not provide fans with the level of immersion they desire. There is a clear need for a more engaging, real-time, and personalized method of experiencing hockey. Our product not only offers an immersive VR experience but also integrates advanced health monitoring features to detect and predict risks such as concussions, ensuring that athletes are protected while fans enjoy a dynamic, first-person view of the game. This innovative approach satisfies the growing demand for an immersive hockey viewing experience while also prioritizing the well-being of the players.
 
-![helmetUnit_showcase](https://github.com/user-attachments/assets/d8b688c0-d8f3-4d71-899e-147b619ad739)
+![helmetUnit_showcase](https://github.com/user-attachments/assets/473021d5-8ed3-49c5-b00c-3e0d5f9f8c0f)
 
 ## Background
 Android App development (COEN 390), Microprocessor Based Systems (COEN 317), Communication Networks & Protocols (ELEC/COEN 366), Electronics I & II (ELEC 311 & 312), Programming Methodology I & II (COEN 243 & 244), Modern Analog Filters (ELEC 412), Introduction to Digital Communications (ELEC 367)
