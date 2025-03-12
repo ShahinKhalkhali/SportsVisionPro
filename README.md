@@ -12,8 +12,6 @@ Additionally, player safety is a top priority. The product will provide immersiv
 
 In summary, the current system does not provide fans with the level of immersion they desire. There is a clear need for a more engaging, real-time, and personalized method of experiencing hockey. Our product not only offers an immersive VR experience but also integrates advanced health monitoring features to detect and predict risks such as concussions, ensuring that athletes are protected while fans enjoy a dynamic, first-person view of the game. This innovative approach satisfies the growing demand for an immersive hockey viewing experience while also prioritizing the well-being of the players.
 
-![helmetUnit_showcase](https://github.com/user-attachments/assets/473021d5-8ed3-49c5-b00c-3e0d5f9f8c0f)
-
 ## Background
 Android App development (COEN 390), Microprocessor Based Systems (COEN 317), Communication Networks & Protocols (ELEC/COEN 366), Electronics I & II (ELEC 311 & 312), Programming Methodology I & II (COEN 243 & 244), Modern Analog Filters (ELEC 412), Introduction to Digital Communications (ELEC 367)
 
@@ -28,3 +26,39 @@ Rongmin Gan, Samson Kaller, Shahin Khalkhali, Tien Vu, Haoyu Wang, Guanfeng Wu
 
 ## Supervisor
 C.W. Truman
+
+## Showcase
+### Dimensions
+<p align="center" width="100%">
+    <img width="50%" height="50%" src="https://github.com/user-attachments/assets/f4e8356d-6316-4f11-8551-49021b18724a">
+</p>
+
+### Top & Back View
+
+<p align="left" width="100%">
+    <img width="50%" height="50%" src="https://github.com/user-attachments/assets/1079a14a-9bb3-4f28-9ae9-b3e67d67aead">
+</p>
+
+<p align="right" width="100%">
+    <img width="50%" height="50%" src="https://github.com/user-attachments/assets/c89964f7-7b29-442e-9d30-8cb1aca87fd8">
+</p>
+
+### Side Views
+
+<p align="center" width="100%">
+    <img width="75%" height="50%" src="https://github.com/user-attachments/assets/9e76743a-cbbe-4cfd-bd42-27c66972eaf8">
+</p>
+<p align="left" width="100%">
+    <img width="75%" height="50%" src="https://github.com/user-attachments/assets/8ec1f243-8918-467a-995d-ce498f306858">
+</p>
+<p align="right" width="100%">
+    <img width="75%" height="50%" src="https://github.com/user-attachments/assets/be8b39d0-d051-4539-aaa0-37e33d5d4431">
+</p>
+<p align="center" width="100%">
+    <img width="75%" height="50%" src="https://github.com/user-attachments/assets/6bc6ba11-c257-476d-ae86-8862a25901a4">
+</p>
+
+### Final Product
+<p align="center" width="100%">
+    <img width="100%" height="100%" src="https://github.com/user-attachments/assets/473021d5-8ed3-49c5-b00c-3e0d5f9f8c0f">
+</p>
