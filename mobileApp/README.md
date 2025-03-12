@@ -1,2 +1,2 @@
 # SportsVisionPro
-# Code for mobile app
+Code for mobile app
