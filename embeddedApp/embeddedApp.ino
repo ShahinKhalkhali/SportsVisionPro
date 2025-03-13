@@ -3,6 +3,7 @@
 #include "camera.h"
 #include "imu.h"
 #include "heartbeat.h"
+#include "tasks.h"
 
 #define MODE_AP
 // #define MODE_STA
@@ -22,7 +23,6 @@
   #error Please define either MODE_AP or MODE_STA
 #endif
 
-
 void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
@@ -39,17 +39,18 @@ void setup() {
   }
   IPAddress ip = WiFi.softAPIP();
 #else
-  WiFi.begin(ssid, password);
-  WiFi.setSleep(false);
+    WiFi.begin(ssid, password);
+    WiFi.setSleep(false);
 
-  Serial.print("WiFi connecting");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("WiFi connected");
-  IPAddress ip = WiFi.localIP();
+    Serial.print("WiFi connecting");
+    while (WiFi.status() != WL_CONNECTED)
+    {
+      delay(500);
+      Serial.print(".");
+    }
+    Serial.println("");
+    Serial.println("WiFi connected");
+    IPAddress ip = WiFi.localIP();
 #endif
 
   startCameraServer();
@@ -57,17 +58,14 @@ void setup() {
   Serial.print("Camera Ready! Use 'http://");
   Serial.print(ip);
   Serial.println("' to connect");
+
+  // CreateTask(functionName, taskName, stackSize, taskParameters, taskPriority)
+  xTaskCreatePinnedToCore(taskWebServer, "WebServer", 4096, NULL, 1, NULL, 0);
+  xTaskCreatePinnedToCore(taskRecordVideo, "RecordVideo", 4096, NULL, 1, NULL, 1);
+  xTaskCreatePinnedToCore(taskStreamVideo, "StreamVideo", 4096, NULL, 1, NULL, 1);
+  xTaskCreatePinnedToCore(taskWebSocket, "WebSocket", 4096, NULL, 1, NULL, 0);
 }
 
 void loop() {
-
-  // Update heartbeat data and broadcast via WebSocket
-  detectHB();
-  updateIMU();
-
-  String data = "{\"bpm\": " + String(bpm) + ", \"avg_bpm\": " + String(bpmAvg) + ", \"ax\": " + String(accX) + ", \"ay\": " + String(accY) + ", \"az\": " + String(accZ) + ", \"gx\": " + String(gyroX) + ", \"gy\": " + String(gyroY) + ", \"gz\": " + String(gyroZ) + ", \"temp\": " + String(temperature) + " }";
-  
-  webSocket.broadcastTXT(data);  // Send heartbeat to all clients
-  webSocket.loop();  // Process WebSocket events
-  yield();
+  vTaskDelay(portMAX_DELAY);
 }

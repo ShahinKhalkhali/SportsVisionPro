@@ -1,6 +1,6 @@
 #pragma once
-#include <Adafruit_MPU6050.h>
-#include <Adafruit_Sensor.h>
+#include <Adafruit_MPU6050.h> // Replace with ICM20948
+#include <Adafruit_Sensor.h>  // Replace with ICM20948 equivalent?
 
 #define GYRO_DELAY (10)
 #define TEMPERATURE_DELAY (1000)
