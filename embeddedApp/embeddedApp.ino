@@ -16,8 +16,8 @@
   const char *password = "pass12345";
 #elif defined(MODE_STA)
   #warning Compiling in MODE_STA
-  const char *ssid = "SportsVisionPro"; //"BELL946";
-  const char *password = "pass12345"; // "A19E72DCCF47";
+  const char *ssid = "SportsVisionPro"; //"--";
+  const char *password = "pass12345"; // "--";
 #else
   #error Please define either MODE_AP or MODE_STA
 #endif
