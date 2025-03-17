@@ -32,9 +32,25 @@
     .video-container {
       grid-column: 2;
       grid-row: 1 / 3;
+      position: relative;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      flex-direction: column; /* Stack elements */
+      justify-content: center; /* Center contents vertically */
+      align-items: center; /* Center contents horizontally */
+      text-align: center;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 2px solid #ff4500;
+      gap: 10px; /* Space between sections */
+      overflow: hidden; /* Prevents elements from overflowing */
+    }
+
+    .video-container img {
+      width: 100%;  /* Ensure the image uses the entire width */
+      height: auto; /* Let the height adjust based on width */
+      max-height: 100%; /* Prevent image from being taller than the container */
+      object-fit: contain;
+      border-radius: 5px;
     }
 
     .acceleration, .heart-rate, .imu, .temperature {
@@ -44,44 +60,119 @@
       text-align: center;
     }
 
-  .imu {
-    grid-column: 3;
-    grid-row: 1 / 3;
-    position: relative;
-    display: flex;
-    flex-direction: column;  /* Stack elements vertically */
-    justify-content: flex-start; /* Align text to the top */
-    align-items: center;
-    text-align: center;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 2px solid #ff4500;
+    .acceleration {
+      grid-column: 1;
+      grid-row: 1 / 2;
+      position: relative;
+      display: flex;
+      flex-direction: column; /* Stack elements */
+      justify-content: flex-start; /* Align to top */
+      align-items: center; /* Center contents horizontally */
+      text-align: center;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 2px solid #ff4500;
+      gap: 10px; /* Space between sections */
+      overflow: hidden; /* Prevents elements from overflowing */
     }
-    
-    .temperature {
-      grid-column: 2;
-      grid-row: 3;
+
+    /* Centering the IMU and Position Sections */
+    .accel-section, .velo-section {
+      flex: 0 1 auto; /* Allow natural size */
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center text and values */
+      justify-content: center; /* Center vertically */
+      padding: 8px;
+      width: 90%; /* Prevents excess stretching */
+      border: 2px solid #ff4500;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Ensure titles are centered */
+    .accel-section h3, .velo-section h3 {
+      margin: 0 0 5px 0; /* Reduce bottom margin */
+    }
+
+    .heart-rate {
+      grid-column: 1;
+      grid-row: 2 / 2;
+      position: relative;
+      display: flex;
+      flex-direction: column; /* Stack elements */
+      justify-content: flex-start; /* Align to top */
+      align-items: center; /* Center contents horizontally */
+      text-align: center;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 2px solid #ff4500;
+      gap: 10px; /* Space between sections */
+      overflow: hidden; /* Prevents elements from overflowing */
+    }
+
+    .imu {
+      grid-column: 3;
+      grid-row: 1 / 3;
+      position: relative;
+      display: flex;
+      flex-direction: column; /* Stack elements */
+      justify-content: flex-start; /* Align to top */
+      align-items: center; /* Center contents horizontally */
+      text-align: center;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 2px solid #ff4500;
+      gap: 10px; /* Space between sections */
+      overflow: hidden; /* Prevents elements from overflowing */
+    }
+
+    /* Centering the IMU and Position Sections */
+    .imu-section, .position-section {
+      flex: 0 1 auto; /* Allow natural size */
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center text and values */
+      justify-content: center; /* Center vertically */
+      padding: 8px;
+      width: 90%; /* Prevents excess stretching */
+      border: 2px solid #ff4500;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Ensure titles are centered */
+    .imu-section h3, .position-section h3 {
+      margin: 0 0 5px 0; /* Reduce bottom margin */
+    }
+
+    /* Adjust the rink container so it takes more space */
+    .rink-section {
+      flex: 1; /* Take up remaining space */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border: 2px solid #ff4500;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.2);
+      overflow: hidden;
+      padding: 10px;
+      width: 90%; /* Ensure it takes full width of the container */
+    }
+
+    /* Tighten the image inside the container */
+    .rink-section img {
+      width: 100%;  /* Ensure the image uses the entire width */
+      height: auto;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 5px;
     }
 
     .data {
       font-size: 18px;
       margin-top: 10px;
-    }
-
-    .video-container img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 10px;
-    }
-
-    /* Position the rink image inside the IMU box */
-    .imu img {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      opacity: 0.9;
     }
 
   </style>
@@ -93,18 +184,18 @@
   <div class="container">
     <div class="acceleration">
       <h3>Acceleration</h3>
-      <div id="accel" class="data">Ax: --, Ay: --, Az: --</div>
+      <div id="accel-section" class="data">Ax: --, Ay: --, Az: --</div>
       <h3>Velocity</h3>
-      <div id="velo" class="data">Vx: --, Vy: --, Vz: --</div>
-      <h3>Position</h3>
-      <div id="posi" class="data">X: --, Y: --</div>
+      <div id="velo-section" class="data">Vx: --, Vy: --, Vz: --</div>
     </div>
     
     <div class="heart-rate">
       <h3>Heart Rate</h3>
-      <div id="heartbeat" class="data">BPM: --, Avg BPM: --</div>
+        <div id="heartbeat" class="data">BPM: --, Avg BPM: --</div>
       <h3>Stress</h3>
-      <div id="stress" class="data">Level: --</div>
+        <div id="stress" class="data">Level: --</div>
+      <h3>Temperature</h3>
+        <div id="temp" class="data">Temp: --</div>
     </div>
     
     <div class="video-container">
@@ -112,15 +203,21 @@
     </div>
 
     <div class="imu">
-      <h3>IMU</h3>
-      <div id="imu" class="data">Y: --, P: --, R: --</div>
-      <img src="./rink.png" alt="Rink Layout" />
+      <div class="imu-section">
+        <h3>IMU</h3>
+        <div id="imu" class="data">Y: --, P: --, R: --</div>
+      </div>
+      <div class="position-section">
+        <h3>Position</h3>
+        <div id="posi" class="data">X: --, Y: --</div>
+      </div>
+      <div class="rink-section">
+        <h3>Ice Rink</h3>
+        <img id="rinkImage" src="./rink.png" alt="Rink Layout" />
+        <div id="rink" class="data"></div>
+      </div>
     </div>
     
-    <div class="temperature">
-      <h3>Temperature</h3>
-      <div id="temp" class="data">Temp: --</div>
-    </div>
   </div>
 
   <script>
