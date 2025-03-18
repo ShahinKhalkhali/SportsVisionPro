@@ -1,6 +1,8 @@
 #pragma once
 #include "esp_camera.h"
 
+#define sensor_t esp_sensor_t
+
 #define PWDN_GPIO_NUM  -1
 #define RESET_GPIO_NUM -1
 #define XCLK_GPIO_NUM  -1

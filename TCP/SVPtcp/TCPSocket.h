@@ -18,7 +18,7 @@ esp_err_t setupWifi(const char* ssid, const char* password) {
   return ESP_OK;
 }
 
-void connectToServer(WiFiClient* client, const char* server, uint16_t port) {
+uint8_t connectToServer(WiFiClient* client, const char* server, uint16_t port) {
   static bool wasConnected{ false };
   if (wasConnected) {
     Serial.printf("Server disconnected!\n");
@@ -32,4 +32,5 @@ void connectToServer(WiFiClient* client, const char* server, uint16_t port) {
     Serial.printf("Connection success!\n");
     wasConnected = true;
   }
+  return client->connected();
 }
