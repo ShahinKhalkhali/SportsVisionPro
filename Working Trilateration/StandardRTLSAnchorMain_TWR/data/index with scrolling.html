@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sports Vision Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Orbitron", sans-serif;
+      margin: 0;
+      padding: 10px;
+      background-color: #222;
+      color: white;
+      text-align: center;
+    }
+    
+    h2 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 36px;
+      letter-spacing: 2px;
+      margin: 5px 0;  /* Reduce space above and below */
+      padding: 5px 0;  /* Minimize extra padding */
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 250px auto 250px;
+      grid-template-rows: auto auto auto;
+      gap: 10px;
+      height: calc(100vh - 30px); /* Adjusted for smaller title spacing */
+    }
+    
+    .video-container {
+      grid-column: 2;
+      grid-row: 1 / 3;
+      position: relative;
+      display: flex;
+      flex-direction: column; /* Stack elements */
+      justify-content: center; /* Center contents vertically */
+      align-items: center; /* Center contents horizontally */
+      text-align: center;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 2px solid #ff4500;
+      gap: 10px; /* Space between sections */
+      overflow: hidden; /* Prevents elements from overflowing */
+    }
+
+    .video-container img {
+      width: 100%;  /* Ensure the image uses the entire width */
+      height: auto; /* Let the height adjust based on width */
+      max-height: 100%; /* Prevent image from being taller than the container */
+      object-fit: contain;
+      border-radius: 5px;
+    }
+
+    .acceleration, .heart-rate, .imu {
+      position: relative;
+      display: flex;
+      flex-direction: column; /* Stack elements */
+      justify-content: flex-start; /* Align to top */
+      align-items: center; /* Center contents horizontally */
+      text-align: center;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 2px solid #ff4500;
+      gap: 10px; /* Space between sections */
+      overflow: hidden; /* Prevents elements from overflowing */
+    }
+
+    .acceleration {
+      grid-column: 1;
+      grid-row: 1 / 2;
+    }
+
+    .heart-rate {
+      grid-column: 1;
+      grid-row: 2 / 2;
+    }
+
+    .imu {
+      grid-column: 3;
+      grid-row: 1 / 3;
+    }
+
+    /* Common section style for all panels */
+    .accel-section, .velo-section, .heart-section, .stress-section, .temp-section, 
+    .imu-section, .position-section, .rink-section {
+      flex: 0 1 auto; /* Allow natural size */
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center text and values */
+      justify-content: center; /* Center vertically */
+      padding: 8px;
+      width: 90%; /* Prevents excess stretching */
+      border: 2px solid #ff4500;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.2);
+      margin-bottom: 10px;
+    }
+
+    /* Ensure titles are centered */
+    .accel-section h3, .velo-section h3, .heart-section h3, .stress-section h3,
+    .temp-section h3, .imu-section h3, .position-section h3, .rink-section h3 {
+      margin: 0 0 5px 0; /* Reduce bottom margin */
+    }
+
+    /* Adjust the rink container so it takes more space */
+    .rink-section {
+      flex: 1; /* Take up remaining space */
+      overflow: hidden;
+    }
+
+    /* Tighten the image inside the container */
+    .rink-section img {
+      width: 100%;  /* Ensure the image uses the entire width */
+      height: auto;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 5px;
+    }
+
+    .data {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h2>Sports Vision Pro</h2>
+  
+  <div class="container">
+    <div class="acceleration">
+      <div class="accel-section">
+        <h3>Acceleration</h3>
+        <div id="accel-section" class="data">Ax: --, Ay: --, Az: --</div>
+      </div>
+      <div class="velo-section">
+        <h3>Velocity</h3>
+        <div id="velo-section" class="data">Vx: --, Vy: --, Vz: --</div>
+      </div>
+    </div>
+    
+    <div class="heart-rate">
+      <div class="heart-section">
+        <h3>Heart Rate</h3>
+        <div id="heartbeat" class="data">BPM: --, Avg BPM: --</div>
+      </div>
+      <div class="stress-section">
+        <h3>Stress</h3>
+        <div id="stress" class="data">Level: --</div>
+      </div>
+      <div class="temp-section">
+        <h3>Temperature</h3>
+        <div id="temp" class="data">Temp: --</div>
+      </div>
+    </div>
+    
+    <div class="video-container">
+      <img id="streamer" src="./streamer.jpg" />
+    </div>
+
+    <div class="imu">
+      <div class="imu-section">
+        <h3>IMU</h3>
+        <div id="imu" class="data">Y: --, P: --, R: --</div>
+      </div>
+      <div class="position-section">
+        <h3>Position</h3>
+        <div id="posi" class="data">X: --, Y: --</div>
+      </div>
+      <div class="rink-section">
+        <h3>Ice Rink</h3>
+        <img id="rinkImage" src="./rink.png" alt="Rink Layout" />
+        <div id="rink" class="data"></div>
+      </div>
+    </div>
+    
+  </div>
+
+  <script>
+    var socket = new WebSocket('ws://' + window.location.hostname + ':81/');
+
+    socket.onopen = function() {
+      console.log('WebSocket connected');
+    };
+
+    socket.onclose = function() {
+      console.log('WebSocket disconnected');
+    };
+
+    socket.onmessage = function(event) {
+      var data = JSON.parse(event.data);
+      document.getElementById('heartbeat').innerHTML = 'BPM: ' + data.bpm + ', Avg BPM: ' + data.avg_bpm;
+      document.getElementById('accel-section').innerHTML = 'Ax: ' + data.ax + ', Ay: ' + data.ay + ', Az: ' + data.az;
+      document.getElementById('temp').innerHTML = 'Temp: ' + data.temp;
+    };
+
+    socket.onerror = function(error) {
+      console.error('WebSocket Error: ' + error);
+    };
+  </script>
+
+</body>
+</html>
