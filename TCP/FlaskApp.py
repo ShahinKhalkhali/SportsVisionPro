@@ -26,7 +26,7 @@ def get_image():
             print("encountered an exception: ")
             print(e)
 
-            with open("streamer.jpg", "rb") as f:
+            with open("pic.jpg", "rb") as f:
                 image_bytes = f.read()
             image = Image.open(BytesIO(image_bytes))
             img_io = BytesIO()
@@ -52,9 +52,20 @@ def index():
 def video_feed():
     return Response(get_image(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
+prev_ax = 0.0
+prev_ay = 0.0
+prev_az = 0.0
+prev_vx = 0.0
+prev_vy = 0.0
+prev_vz = 0.0
+prev_time = None
+
 # API endpoint to provide sensor data
 @app.route('/api/sensor_data')
 def sensor_data():
+    global prev_vx, prev_vy, prev_vz, prev_time, prev_ax, prev_ay, prev_az
+    
     with open('data.json', 'r') as file:
         print('file opened')
         loadData = json.load(file)
@@ -70,21 +81,51 @@ def sensor_data():
     ay = float(loadData['a_y'])
     az = float(loadData['a_z'])
     
+    curr_time = time.time()
+    
+    # Calculate time difference (Δt)
+    if prev_time is not None:
+        dt = curr_time - prev_time
+        dt = max(dt, 1e-6)  # Prevent division by zero
+    else:
+        dt = 0  # First call, no time difference
+        
     # Velocity values (-5 to 5 m/s)
-    vx = round(random.uniform(-4.99, 4.99), 2)
-    vy = round(random.uniform(-4.99, 4.99), 2)
-    vz = round(random.uniform(-4.99, 4.99), 2)
+        
+    if (ax != prev_ax):
+        vx = prev_vx + ax * dt
+    else:
+        vx = 0.0
+    
+    if (ay != prev_ay):
+        vy = prev_vy + ay * dt
+    else:
+        vy = 0.0
+    
+    if (az != prev_az):
+        vz = prev_vz + az * dt
+    else:
+        vz = 0.0
+    
+    prev_vx, prev_vy, prev_vz, prev_time = vx, vy, vz, curr_time
+    prev_ax, prev_ay, prev_az = ax, ay, az
     
     # Temperature (35-40°C for body temp)
     temp = float(loadData['temp'])
     
     # Stress level (1-10)
-    stress = round(random.uniform(1, 9.9), 1)
-    
+    if (avg_bpm < 90.0):
+        stress = 'Low'
+    elif (avg_bpm < 120.0):
+        stress = 'Medium'
+    else:
+        stress = 'High'
+
+        
     # IMU values (Yaw, Pitch, Roll in degrees) - limiting to smaller range for display consistency
-    yaw = float(loadData['g_x'])
-    pitch = float(loadData['g_y'])
-    roll = float(loadData['g_z'])
+    roll = float(loadData['g_x']) * 180.0 / math.pi
+    pitch = float(loadData['g_y']) * 180.0 / math.pi
+    yaw = float(loadData['g_z']) * 180.0 / math.pi
     
     # Position on rink (x: 0-30m, y: 0-60m for hockey rink dimensions)
     pos_x = round(random.uniform(0, 29.9), 1)

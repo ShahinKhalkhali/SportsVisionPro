@@ -5,9 +5,9 @@
 
 // #define VERBOSE
 
-#define DELAY_MS_CAM  10
-#define DELAY_MS_HB   10
-#define DELAY_MS_IMU  100
+#define DELAY_MS_CAM 10
+#define DELAY_MS_HB 10
+#define DELAY_MS_IMU 100
 #define DELAY_MS_LOOP 1000
 
 #define TICKS(t) (t * portTICK_PERIOD_MS)
@@ -16,11 +16,11 @@
 // const char* password{ "A19E72DCCF47" }; // YOUR NETWORK PASSWORD HERE
 // const char* server  { "192.168.2.18" }; // PUT YOUR COMPUTER IP HERE (use 'ipconfig' in cmd prompt)
 
-const char* ssid    { "SportsVisionPro" };      // YOUR NETWORK SSID HERE
-const char* password{ "pass12345" }; // YOUR NETWORK PASSWORD HERE
-const char* server  { "192.168.43.130" }; // PUT YOUR COMPUTER IP HERE (use 'ipconfig' in cmd prompt)
+const char* ssid{ "SportsVisionPro" };   // YOUR NETWORK SSID HERE
+const char* password{ "pass12345" };     // YOUR NETWORK PASSWORD HERE
+const char* server{ "192.168.43.130" };  // PUT YOUR COMPUTER IP HERE (use 'ipconfig' in cmd prompt)
 
-const uint16_t port { 12000 };          // MAKE SURE PORT MATCHES BIND PORT IN PYTHON SCRIPT
+const uint16_t port{ 12000 };  // MAKE SURE PORT MATCHES BIND PORT IN PYTHON SCRIPT
 
 SemaphoreHandle_t mtxTCP = xSemaphoreCreateMutex();
 SemaphoreHandle_t mtxI2C = xSemaphoreCreateMutex();
@@ -52,23 +52,23 @@ void sendMsg(WiFiClient* pClient, size_t len, MSG_TYPE type, uint8_t* data) {
 }
 
 void cameraTask(void* params) {
-  #ifdef VERBOSE
+#ifdef VERBOSE
   Serial.printf("Camera Task Created!\n");
-  #endif
+#endif
   WiFiClient* pClient = (WiFiClient*)params;
-  camera_fb_t *fb = NULL;
+  camera_fb_t* fb = NULL;
 
   while (pClient->connected()) {
-  #ifdef VERBOSE
+#ifdef VERBOSE
     Serial.printf("Update fb...\n");
-  #endif
+#endif
     xSemaphoreTake(mtxI2C, portMAX_DELAY);
     fb = esp_camera_fb_get();
     xSemaphoreGive(mtxI2C);
 
-  #ifdef VERBOSE
+#ifdef VERBOSE
     Serial.printf("Sending fb data...\n");
-  #endif
+#endif
     sendMsg(pClient, fb->len, STREAM, fb->buf);
     vTaskDelay(pdMS_TO_TICKS(10));
     esp_camera_fb_return(fb);
@@ -78,41 +78,43 @@ void cameraTask(void* params) {
     // yield();
   }
 
-  #ifdef VERBOSE
+#ifdef VERBOSE
   Serial.printf("Exit Camera Task, client disconnected!\n");
-  #endif
+#endif
   vTaskDelete(NULL);
 }
 
 void hbTask(void* params) {
-  #ifdef VERBOSE
+#ifdef VERBOSE
   Serial.printf("HB Task created!\n");
-  #endif
+#endif
   WiFiClient* pClient = (WiFiClient*)params;
   unsigned long lastMillis{ millis() };
   byte rates[RATE_SIZE];
   int i{ 0 };
 
   while (pClient->connected()) {
-    #ifdef VERBOSE
+#ifdef VERBOSE
     Serial.printf("Update HB...\n");
-    #endif
+#endif
     xSemaphoreTake(mtxI2C, portMAX_DELAY);
     long irValue = hbSensor.getIR();
     xSemaphoreGive(mtxI2C);
-    
-    #ifdef VERBOSE
+
+#ifdef VERBOSE
     Serial.printf("Detecting HB...\n");
-    #endif
+#endif
     detectHB(irValue, rates, i);
 
-    if (millis() - lastMillis > 1000) {
-      #ifdef VERBOSE
+    if (millis() - lastMillis > 500) {
+#ifdef VERBOSE
       Serial.printf("Sending HB data...\n");
-      #endif
+#endif
       String msg;
       // msg = String(bpm); sendMsg(msg.length(), BPM, (uint8_t*)msg.c_str()); vTaskDelay(pdMS_TO_TICKS(10));
-      msg = String(irValue >= 50000 ? bpmAvg : -1); sendMsg(pClient, msg.length(), BPM_AVG, (uint8_t*)msg.c_str()); vTaskDelay(pdMS_TO_TICKS(10));
+      msg = String(irValue >= 50000 ? bpmAvg : -1);
+      sendMsg(pClient, msg.length(), BPM_AVG, (uint8_t*)msg.c_str());
+      vTaskDelay(pdMS_TO_TICKS(10));
       lastMillis = millis();
     }
     vTaskDelay(TICKS(DELAY_MS_HB));
@@ -120,16 +122,16 @@ void hbTask(void* params) {
     // yield();
   }
 
-  #ifdef VERBOSE
+#ifdef VERBOSE
   Serial.printf("Exit HB Task, client disconnected!\n");
-  #endif
+#endif
   vTaskDelete(NULL);
 }
 
 void imuTask(void* params) {
-  #ifdef VERBOSE
+#ifdef VERBOSE
   Serial.printf("IMU Task created!\n");
-  #endif
+#endif
   WiFiClient* pClient = (WiFiClient*)params;
   unsigned long lastSend = 0;
   float accX{ 0.0f }, accY{ 0.0f }, accZ{ 0.0f };
@@ -137,15 +139,15 @@ void imuTask(void* params) {
   float temp{ 0.0f };
 
   while (pClient->connected()) {
-    #ifdef VERBOSE
+#ifdef VERBOSE
     Serial.printf("Update IMU data\n");
-    #endif
+#endif
     // sensors_event_t a, g, t;
 
     // xSemaphoreTake(mtxI2C, portMAX_DELAY);
     // mpu.getEvent(&a, &g, &t);
     // xSemaphoreGive(mtxI2C);
-    
+
     // accX = a.acceleration.x;
     // accY = a.acceleration.y;
     // accZ = a.acceleration.z;
@@ -156,9 +158,9 @@ void imuTask(void* params) {
     // temp = temp - 20;
 
     if (millis() - lastSend > 1000) {
-      #ifdef VERBOSE
+#ifdef VERBOSE
       Serial.printf("Send IMU data\n");
-      #endif
+#endif
       // String msg;
       // msg = String(accX); sendMsg(pClient, msg.length(), ACC_X, (uint8_t*)msg.c_str());
       // msg = String(accY); sendMsg(pClient, msg.length(), ACC_Y, (uint8_t*)msg.c_str());
@@ -175,9 +177,9 @@ void imuTask(void* params) {
     // yield();
   }
 
-  #ifdef VERBOSE
+#ifdef VERBOSE
   Serial.printf("Exit IMU Task, client disconnected!\n");
-  #endif
+#endif
   vTaskDelete(NULL);
 }
 
@@ -240,13 +242,13 @@ void loop() {
 
     bool connected = connectToServer(&client, server, port);
     if (connected) {
-        xTaskCreatePinnedToCore(cameraTask, "cameraTask", 8192, (void*)&client, 2, NULL, 0);
-        vTaskDelay(TICKS(500));
-        xTaskCreatePinnedToCore(hbTask, "hbTask", 2048, (void*)&client, 1, NULL, 1);
-        vTaskDelay(TICKS(500));
-        // xTaskCreatePinnedToCore(imuTask, "imuTask", 2048, (void*)&client, 1, NULL, 0);
-        vTaskDelay(TICKS(500));
-        // xTaskCreatePinnedToCore(sensorsTask, "sensorsTask", 8192, (void*)&client, 1, NULL, 1);
+      xTaskCreatePinnedToCore(cameraTask, "cameraTask", 8192, (void*)&client, 2, NULL, 0);
+      vTaskDelay(TICKS(500));
+      xTaskCreatePinnedToCore(hbTask, "hbTask", 2048, (void*)&client, 1, NULL, 1);
+      vTaskDelay(TICKS(500));
+      // xTaskCreatePinnedToCore(imuTask, "imuTask", 2048, (void*)&client, 1, NULL, 0);
+      vTaskDelay(TICKS(500));
+      // xTaskCreatePinnedToCore(sensorsTask, "sensorsTask", 8192, (void*)&client, 1, NULL, 1);
     }
     vTaskDelay(TICKS(DELAY_MS_LOOP));
     return;
@@ -263,9 +265,9 @@ void loop() {
   }
 
   if (time - lastSample > 100) {
-    #ifdef VERBOSE
+#ifdef VERBOSE
     Serial.printf("Update IMU data\n");
-    #endif
+#endif
 
     sensors_event_t a, g, t;
     xSemaphoreTake(mtxI2C, portMAX_DELAY);
@@ -273,24 +275,40 @@ void loop() {
     xSemaphoreGive(mtxI2C);
 
     accX = a.acceleration.x;
+    if (abs(accX) < 0.75f) accX = 0.0f;
     accY = a.acceleration.y;
-    accZ = a.acceleration.z;
-    gyroX = g.gyro.x;
-    gyroY = g.gyro.y;
-    gyroZ = g.gyro.z;
+    if (abs(accY) < 0.75f) accY = 0.0f;
+    accZ = 0.0f;
+    // accZ = a.acceleration.z;
+
+    float gyroX_temp = g.gyro.x;
+    if (abs(gyroX_temp) > gyroXerror) {
+      gyroX += gyroX_temp;
+    }
+
+    float gyroY_temp = g.gyro.y;
+    if (abs(gyroY_temp) > gyroYerror) {
+      gyroY += gyroY_temp;
+    }
+
+    float gyroZ_temp = g.gyro.z;
+    if (abs(gyroZ_temp) > gyroZerror) {
+      gyroZ += gyroZ_temp;
+    }
+
+
     temp = t.temperature;
     temp = temp - 20;
 
     lastSample = time;
   }
-    
-  if (time - lastSend > 1000) {
-    #ifdef VERBOSE
+
+  if (time - lastSend > 500) {
+#ifdef VERBOSE
     Serial.printf("Send IMU data\n");
-    #endif
+#endif
     String msg;
-    msg = String(accX) + ", " + String(accY) + ", " + String(accZ) + ", " + 
-      String(gyroX) + ", " + String(gyroY) + ", " + String(gyroZ) + ", "  +  String(temp);
+    msg = String(accX) + ", " + String(accY) + ", " + String(accZ) + ", " + String(gyroX) + ", " + String(gyroY) + ", " + String(gyroZ) + ", " + String(temp);
     sendMsg(&client, msg.length(), IMU, (uint8_t*)msg.c_str());
     lastSend = time;
   }

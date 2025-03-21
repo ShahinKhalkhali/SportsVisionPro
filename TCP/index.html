@@ -243,14 +243,14 @@
           
           // Update heart rate data
           document.getElementById('heartbeat').innerHTML = createAlignedData(
-            ['BPM', 'Avg BPM'],
-            [formatValue(data.bpm, 1), formatValue(data.avg_bpm, 1)]
+            ['BPM'],
+            [formatValue(data.avg_bpm, 1)]
           );
           
           // Update stress level
           document.getElementById('stress').innerHTML = createAlignedData(
             ['Level'],
-            [formatValue(data.stress, 1)]
+            [data.stress]
           );
           
           // Update temperature
