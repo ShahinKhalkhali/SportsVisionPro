@@ -31,14 +31,14 @@ typedef struct Position {
 } Position;
 
 // connection pins
-const uint8_t PIN_SCK = 18; // clock pin
-const uint8_t PIN_MISO = 19; // miso pin
-const uint8_t PIN_MOSI = 23; // mosi pin
-const uint8_t PIN_DWCS = 5; // select pin
+const uint8_t PIN_SCK = 36; // clock pin
+const uint8_t PIN_MISO = 37; // miso pin
+const uint8_t PIN_MOSI = 35; // mosi pin
+const uint8_t PIN_DWCS = 39;// select pin
 
-const uint8_t PIN_RST = 27; // reset pin
-const uint8_t PIN_IRQ = 26; // irq pin
-const uint8_t PIN_SS = 5; // spi select pin
+const uint8_t PIN_RST = 2; // reset pin
+const uint8_t PIN_IRQ = 4; // irq pin
+const uint8_t PIN_SS = 39; // spi select pin
 
 // Extended Unique Identifier register. 64-bit device identifier. Register file: 0x01
 const char EUI[] = "AA:BB:CC:DD:EE:FF:00:01";
