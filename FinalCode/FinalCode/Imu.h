@@ -1,9 +1,12 @@
+
 #include <Wire.h>
 #include <Adafruit_ICM20X.h>
 #include <Adafruit_ICM20948.h>
 #include <Adafruit_Sensor.h>
 
 Adafruit_ICM20948 icm;
+
+
 
 #define PIN_SCL 1
 #define PIN_SDA 2

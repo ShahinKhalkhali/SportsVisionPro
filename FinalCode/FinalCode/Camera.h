@@ -1,7 +1,7 @@
 #pragma once
 #include "esp_camera.h"
 
-#define sensor_t esp_sensor_t
+// #define sensor_t esp_sensor_t
 
 #define PWDN_GPIO_NUM   -1
 #define RESET_GPIO_NUM  -1
@@ -51,11 +51,18 @@ esp_err_t setupCamera() {
   config.pixel_format = PIXFORMAT_JPEG;
   config.sccb_i2c_port = 0;
 
-  config.frame_size = FRAMESIZE_QVGA;
-  config.jpeg_quality = 10;
+  config.frame_size = FRAMESIZE_HQVGA;
+  config.jpeg_quality = 7;
   config.fb_count = 2;
 
   // camera init
   Serial.printf("> Init camera with config...\n");
-  return esp_camera_init(&config);
+  esp_err_t err = esp_camera_init(&config);
+
+  // if (err == ESP_OK) {
+    sensor_t* s = esp_camera_sensor_get();
+  //   s->set_vflip(s, 1);
+  // }
+
+  return err;
 }

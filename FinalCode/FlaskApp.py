@@ -147,8 +147,8 @@ def sensor_data():
         stress = 'High'
 
     # Position on rink (x: 0-30m, y: 0-60m for hockey rink dimensions)
-    pos_x = round(random.uniform(0, 29.9), 1)
-    pos_y = round(random.uniform(0, 59.9), 1)
+    pos_x = 0.0
+    pos_y = 0.0
     
     return jsonify({
         'bpm': bpm,
@@ -175,4 +175,4 @@ def static_files(filename):
     return send_from_directory('.', filename)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=False, threaded=True)
+    app.run(host='0.0.0.0', port=80, debug=False, threaded=True)

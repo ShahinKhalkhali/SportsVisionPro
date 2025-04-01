@@ -1,6 +1,7 @@
 from socket import *
 import json
 import shutil
+import time
 
 MSG_TYPE_TEXT   = 0
 MSG_TYPE_STREAM = 1
@@ -14,7 +15,7 @@ JSON_FILENAME   = 'data.json'
 
 
 try:
-    serverIP = '192.168.2.18'
+    serverIP = '192.168.43.130'
     serverPort = 12000
     clientSocket = None
     
@@ -140,6 +141,8 @@ try:
                     print('Nobody there...')
                     break
                 continue
+                
+            time.sleep(0.001)
     
 except KeyboardInterrupt:
     print('Keyboard Interrupt! Exiting...')

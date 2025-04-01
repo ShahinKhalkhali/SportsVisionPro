@@ -3,11 +3,11 @@
 #include "Camera.h"
 #include "Heartbeat.h"
 #include "Imu.h"
+#include "Tag.h"
 
 #define EN_CAM
 #define EN_HB
 #define EN_IMU
-//////////////////////////////////////////////////////////////////////////////// ENABLE TAG HERE
 // #define EN_TAG
 
 #define DELAY_LOOP        (5000 / portTICK_PERIOD_MS)
@@ -34,9 +34,9 @@
 #define PRI_TASK_TAG  1
 
 //////////////////////////////////////////////////////////////////////////////// SETUP THESE FOR CAPSTONE
-const char* ssid = "BELL946";
-const char* password = "A19E72DCCF47";
-const char* server = "192.168.2.18";
+const char* ssid = "SportsVisionPro";
+const char* password = "pass12345";
+const char* server = "192.168.43.130";
 
 // these should be ok, match python script tho!
 const uint16_t port = 12000;
@@ -47,7 +47,7 @@ enum MSG_TYPE : uint8_t {
   STREAM,
   BPM,
   IMU,
-  TAG
+  UWB
 };
 
 SemaphoreHandle_t mtxI2C = xSemaphoreCreateMutex();
@@ -200,20 +200,22 @@ void tagTask(void* params) {
   Serial.printf("> TAG Task created on Core %d!\n", xPortGetCoreID());
 
   unsigned long lastMillis = 0;
-  //////////////////////////////////////////////////////////////////////////////// TAG data here
-  // sensors_event_t a, g, t, m; // acc gyro temp mag
   String msg;
 
   while (WiFi.isConnected()) {
-    //////////////////////////////////////////////////////////////////////////////// TAG uses SPI instead of I2C
-    // xSemaphoreTake(mtxI2C, portMAX_DELAY);
-    // icm.getEvent(&a, &g, &t, &m);
-    // xSemaphoreGive(mtxI2C);
+    DW1000Ranging.loop();
 
     if (millis() - lastMillis > DELAY_SEND_TAG) {
-      //////////////////////////////////////////////////////////////////////////////// TAG MESSAGE HERE
-      // msg = RANGES
-      // sendMsg(TAG, msg.length(), (uint8_t*)msg.c_str());
+      struct MyLink* pLink = uwb_data;
+
+      pLink = pLink->next;
+      msg = String(pLink->anchor_addr) + " " + String(pLink->range[0]);
+      pLink = pLink->next;
+      msg += ", " + String(pLink->anchor_addr) + " " + String(pLink->range[0]);
+      pLink = pLink->next;
+      msg += ", " + String(pLink->anchor_addr) + " " + String(pLink->range[0]);
+
+      sendMsg(UWB, msg.length(), (uint8_t*)msg.c_str());
       lastMillis = millis();
     }
 
@@ -233,10 +235,11 @@ void setup() {
 
   Serial.printf("> Power on! Core %d initializing...\n", xPortGetCoreID());
 
+  Serial.printf("> Initializing I2C...\n");
   Wire.begin(PIN_SDA, PIN_SCL);
 
-  //////////////////////////////////////////////////////////////////////////////// INIT SPI FOR TAG
-  // spiIint();
+  Serial.printf("> Initializing SPI...\n");
+  SPI.begin(PIN_CLK, PIN_MISO, PIN_MOSI, PIN_SS);
 
   #ifdef EN_CAM
   err = setupCamera();
@@ -262,7 +265,6 @@ void setup() {
   }
   #endif
 
-  //////////////////////////////////////////////////////////////////////////////// INIT TAG
   #ifdef EN_TAG
   err = setupTAG();
   if (err != ESP_OK) {
