@@ -22,7 +22,7 @@
 #define PCLK_GPIO_NUM   16
 #define XCLK_GPIO_NUM   8
 
-#define XCLK_FREQ 8000000
+#define XCLK_FREQ 12000000
 
 esp_err_t setupCamera() {
   Serial.printf("> Init camera config...\n");

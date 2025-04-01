@@ -13,7 +13,7 @@
 #define DELAY_LOOP        (5000 / portTICK_PERIOD_MS)
 #define DELAY_RESTART     (1000 / portTICK_PERIOD_MS)
 #define DELAY_TASK_START  (100 / portTICK_PERIOD_MS)
-#define DELAY_TASK_CAM    (10 / portTICK_PERIOD_MS)
+#define DELAY_TASK_CAM    (20 / portTICK_PERIOD_MS)
 #define DELAY_TASK_HB     (10 / portTICK_PERIOD_MS)
 #define DELAY_TASK_IMU    (10 / portTICK_PERIOD_MS)
 #define DELAY_TASK_TAG    (10 / portTICK_PERIOD_MS)
@@ -181,7 +181,7 @@ void imuTask(void* params) {
     if (millis() - lastMillis > DELAY_SEND_IMU) {
       msg = String(a.acceleration.x)  + ", " +  String(a.acceleration.y)  + ", " + String(a.acceleration.z) + ", " +
             String(g.gyro.x)          + ", " + String(g.gyro.y)           + ", " + String(g.gyro.z)         + ", " +
-            String(m.magnetic.x)      + ", " + String(m.magnetic.y)       + ", " + String(m.magnetic.z)     + ", " +
+            // String(m.magnetic.x)      + ", " + String(m.magnetic.y)       + ", " + String(m.magnetic.z)     + ", " +
             String(t.temperature); 
       sendMsg(IMU, msg.length(), (uint8_t*)msg.c_str());
       lastMillis = millis();

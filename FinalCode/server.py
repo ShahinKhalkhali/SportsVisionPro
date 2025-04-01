@@ -1,5 +1,6 @@
 from socket import *
 import json
+import shutil
 
 MSG_TYPE_TEXT   = 0
 MSG_TYPE_STREAM = 1
@@ -65,12 +66,24 @@ try:
                     print(f'> Received  TEXT  {msgLen} B  {msgData}')
                     
                 elif msgType == MSG_TYPE_STREAM:
-                    print(f'> Received  STREAM  {msgLen} B  (JPEG {len(msgData)})')
+                    print(f'> Received  STREAM  {msgLen} B  (JPEG {len(msgData)} B)')
                     if len(msgData) != msgLen:
                         print(f'> ERROR: JPG size mismatch!')
                         continue
+                    
+                    # temp_path = STREAM_FILENAME + '.tmp'
+                    # with open(temp_path, 'wb') as file:
                     with open(STREAM_FILENAME, 'wb') as file:
                         file.write(msgData)
+                        
+                    # retries = 5
+                    # while retries > 0:
+                        # try:
+                            # shutil.move(temp_path, STREAM_FILENAME)
+                            # break  # Success, exit retry loop
+                        # except PermissionError:
+                            # retries -= 1
+                            # time.sleep(0.1)  # Small delay before retrying
                     
                 elif msgType == MSG_TYPE_BPM:
                     print(f'> Received  BPM  {msgLen} B  {msgData}')
@@ -83,7 +96,8 @@ try:
                     print(f'> Received  IMU  {msgLen} B  {msgData}')
                     try :
                         imu = msgData.decode().split(', ')
-                        if len(imu) != 10:
+                        # if len(imu) != 10:
+                        if len(imu) != 7:
                             print(f'> ERROR: unexpected IMU length ({len(imu)})')
                             continue
                         data['acc']['x'] = imu[0]
@@ -92,10 +106,11 @@ try:
                         data['gyro']['x'] = imu[3]
                         data['gyro']['y'] = imu[4]
                         data['gyro']['z'] = imu[5]
-                        data['mag']['x'] = imu[6]
-                        data['mag']['y'] = imu[7]
-                        data['mag']['z'] = imu[8]
-                        data['temp'] = imu[9]
+                        data['temp'] = imu[6]
+                        # data['mag']['x'] = imu[6]
+                        # data['mag']['y'] = imu[7]
+                        # data['mag']['z'] = imu[8]
+                        # data['temp'] = imu[9]
                     except UnicodeDecodeError:
                         print('> ERROR: could not decode IMU')
                     
