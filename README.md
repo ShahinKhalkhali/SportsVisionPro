@@ -21,12 +21,6 @@ Programming, PCB Design, 3D Modeling, Debugging
 ## Tools
 Laptop, Mobile Device, VR Goggles (Meta Quest 3), SDK (Meta Quest Dev Center), MicroController w/ integrated Wi-fi / Custom PCB, Camera (Arducam IMX477), Battery (Lithium-Ion), Wires, Router, Wi-fi Connection, KiCAD, C++, Python, Java, MATLAB, PSPICE, Android Studio, Blender, GPS module, physical model, Ambient cooling methods for device.
 
-## Team
-Rongmin Gan, Samson Kaller, Shahin Khalkhali, Tien Vu, Haoyu Wang, Guanfeng Wu
-
-## Supervisor
-C.W. Truman
-
 ## Showcase
 ### Dimensions
 <p align="center" width="100%">
